@@ -1,3 +1,4 @@
 .env
 sqlite.db
-images_temp
+images_temp/*.png
+images_temp/*.jpeg

@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "jgaltnewsnetwork"
+version = "0.1.0"
+description = ""
+authors = ["tadamcz <tmkadamcz@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+imgkit = "^1.2.2"
+requests = "^2.27.1"
+peewee = "^3.14.10"
+beautifulsoup4 = "^4.10.0"
+tweepy = "^4.8.0"
+python-dateutil = "^2.8.2"
+python-dotenv = "^0.20.0"
+regex = "^2022.3.15"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
