@@ -87,7 +87,7 @@ class NewsNetwork:
 		if self.comment_references_one_tweet(html):
 			soup.a.decompose()
 			soup.get_text()
-			tweet_lines = [soup.get_text()]
+			tweet_lines = [soup.get_text()+'⬇️']
 
 		else:
 			if len(a_tags) > 1:
