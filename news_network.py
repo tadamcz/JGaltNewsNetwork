@@ -20,8 +20,9 @@ class NewsNetwork:
 	START_DATE = datetime.datetime(2022, 3, 1)
 	JPEG_PATH = 'images_temp'
 
-	def __init__(self):
-		pass
+	def __init__(self, production=False):
+		print(f"Production: {production}")
+		self.production = production
 
 	def get_comments(self):
 
@@ -56,27 +57,35 @@ class NewsNetwork:
 												   & (Comment.parent.is_null())
 												   )
 		for comment_db in comments_to_tweet:
+			comment = json.loads(comment_db.json)
+			html = comment['comment_html']
+			tweet_text = self.generate_tweet_text(comment_db)
 			try:
-				comment = json.loads(comment_db.json)
-				html = comment['comment_html']
-
-				tweet_text = self.generate_tweet_text(comment_db)
-				quoted_tweet = self.comment_references_one_tweet(html)
-				if quoted_tweet:
-					link, id = quoted_tweet
-					tweet_response = client.create_tweet(text=tweet_text, quote_tweet_id=id)
-				else:
-					file_name = os.path.join(self.JPEG_PATH, str(comment_db.id) + ".png")
-					self.generate_image(html, file_name)
-					image_id = api.media_upload(filename=file_name).media_id
-					tweet_response = client.create_tweet(text=tweet_text, media_ids=[image_id])
-
-				print(tweet_response)
-				comment_db.tweeted = True
-				comment_db.save()
-				sleep(30)
+				self.create_tweet(tweet_text=tweet_text, html=html, comment_id=comment_db.id)
 			except tweepy.errors.BadRequest as e:
 				print(tweepy.errors.BadRequest, e)
+			finally:
+				comment_db.tweeted = True
+				comment_db.save()
+
+
+	def create_tweet(self, tweet_text, html, comment_id):
+		if self.production:
+			sleep(30)
+			quoted_tweet = self.comment_references_one_tweet(html)
+			if quoted_tweet:
+				link, id = quoted_tweet
+				tweet_response = client.create_tweet(text=tweet_text, quote_tweet_id=id)
+			else:
+				file_name = os.path.join(self.JPEG_PATH, str(comment_id) + ".png")
+				self.generate_image(html, file_name)
+				image_id = api.media_upload(filename=file_name).media_id
+				tweet_response = client.create_tweet(text=tweet_text, media_ids=[image_id])
+			print(f"\n\n {tweet_response}")
+			return tweet_response
+		else:
+			print(f"\n\n {tweet_text}")
+			return tweet_text
 
 
 	def generate_tweet_text(self, comment):
