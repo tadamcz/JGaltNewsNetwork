@@ -81,10 +81,13 @@ class NewsNetwork:
 
 	def generate_tweet_text(self, comment):
 		html = json.loads(comment.json)['comment_html']
-		a_tags = BeautifulSoup(html, 'html.parser').find_all('a')
+		soup = BeautifulSoup(html, 'html.parser')
+		a_tags = soup.find_all('a')
 
 		if self.comment_references_one_tweet(html):
-			tweet_lines = []
+			soup.a.decompose()
+			soup.get_text()
+			tweet_lines = [soup.get_text()]
 
 		else:
 			if len(a_tags) > 1:
@@ -138,5 +141,3 @@ class NewsNetwork:
 			'width': width,
 			'--disable-smart-width':1,
 		})
-
-		print()
