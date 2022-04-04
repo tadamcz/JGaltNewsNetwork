@@ -56,6 +56,9 @@ class NewsNetwork:
 												   & (Comment.created_at > self.START_DATE)
 												   & (Comment.parent.is_null())
 												   )
+
+		print(f"Total comments in database: {Comment.select().count()}")
+		print(f"Comments to tweet: {len(comments_to_tweet)}")
 		for comment_db in comments_to_tweet:
 			comment = json.loads(comment_db.json)
 			html = comment['comment_html']
