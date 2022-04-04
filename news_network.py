@@ -8,6 +8,7 @@ import imgkit
 import peewee
 import regex
 import requests
+import tweepy
 from bs4 import BeautifulSoup
 
 from db import Comment, Question
@@ -55,25 +56,28 @@ class NewsNetwork:
 												   & (Comment.parent.is_null())
 												   )
 		for comment_db in comments_to_tweet:
-			comment = json.loads(comment_db.json)
-			html = comment['comment_html']
+			try:
+				comment = json.loads(comment_db.json)
+				html = comment['comment_html']
 
-			tweet_text = self.generate_tweet_text(comment_db)
-			quoted_tweet = self.comment_references_one_tweet(html)
-			if quoted_tweet:
-				link, id = quoted_tweet
-				tweet_response = client.create_tweet(text=tweet_text, quote_tweet_id=id)
-			else:
+				tweet_text = self.generate_tweet_text(comment_db)
+				quoted_tweet = self.comment_references_one_tweet(html)
+				if quoted_tweet:
+					link, id = quoted_tweet
+					tweet_response = client.create_tweet(text=tweet_text, quote_tweet_id=id)
+				else:
+					file_name = os.path.join(self.JPEG_PATH, str(comment_db.id) + ".png")
+					self.generate_image(html, file_name)
+					image_id = api.media_upload(filename=file_name).media_id
+					tweet_response = client.create_tweet(text=tweet_text, media_ids=[image_id])
 
-				file_name = os.path.join(self.JPEG_PATH, str(comment_db.id) + ".png")
-				self.generate_image(html, file_name)
-				image_id = api.media_upload(filename=file_name).media_id
-				tweet_response = client.create_tweet(text=tweet_text, media_ids=[image_id])
+				print(tweet_response)
+				comment_db.tweeted = True
+				comment_db.save()
+				sleep(30)
+			except tweepy.errors.BadRequest as e:
+				print(tweepy.errors.BadRequest, e)
 
-			print(tweet_response)
-			comment_db.tweeted = True
-			comment_db.save()
-			sleep(30)
 
 	def generate_tweet_text(self, comment):
 		html = json.loads(comment.json)['comment_html']
