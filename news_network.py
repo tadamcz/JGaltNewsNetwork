@@ -20,7 +20,7 @@ class NewsNetwork:
 	START_DATE = datetime.datetime(2022, 3, 1)
 	JPEG_PATH = 'images_temp'
 
-	def __init__(self, production=False):
+	def __init__(self, production):
 		print(f"Production: {production}")
 		self.production = production
 
