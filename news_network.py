@@ -102,11 +102,7 @@ class NewsNetwork:
 			tweet_lines = [soup.get_text()+'⬇️']
 
 		else:
-			if len(a_tags) > 1:
-				tweet_lines = ["🔗 Links in comment:"]
-			else:
-				tweet_lines = []
-
+			tweet_lines = []
 			emoji_numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
 			link_description_max_len = 100 // len(a_tags)
 			for i, a_tag in enumerate(a_tags):
@@ -115,8 +111,10 @@ class NewsNetwork:
 				if len(a_text) > link_description_max_len:
 					a_text = a_text[:link_description_max_len] + "..."
 
-				if 1 < len(a_tags) < 10:
-					tweet_lines.append(f"{emoji_numbers[i]}: {a_text}: {a_href}")
+				if len(a_tags) == 1:
+					tweet_lines.append(f"🔗{a_text}: {a_href}")
+				elif 1 < len(a_tags) < 10:
+					tweet_lines.append(f"🔗{emoji_numbers[i]} {a_text}: {a_href}")
 				else:
 					tweet_lines.append(f"{a_text}: {a_href}")
 
