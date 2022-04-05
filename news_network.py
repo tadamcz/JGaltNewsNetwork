@@ -84,10 +84,10 @@ class NewsNetwork:
 				self.generate_image(html, file_name)
 				image_id = api.media_upload(filename=file_name).media_id
 				tweet_response = client.create_tweet(text=tweet_text, media_ids=[image_id])
-			print(f"\n\n {tweet_response}")
+			print(f"\n\n{tweet_response}")
 			return tweet_response
 		else:
-			print(f"\n\n {tweet_text}")
+			print(f"\n\n{tweet_text}")
 			return tweet_text
 
 

@@ -14,7 +14,7 @@ exec &>> logs.txt
 PATH=$PATH":/usr/local/bin"
 echo "Running cron-job jgalt at $(date)"
 
-/home/thomas/.cache/pypoetry/virtualenvs/jgaltnewsnetwork-H6aRXdm--py3.8/bin/python /home/thomas/JGaltNewsNetwork/main.py
+/home/thomas/.cache/pypoetry/virtualenvs/jgaltnewsnetwork-H6aRXdm--py3.8/bin/python /home/thomas/JGaltNewsNetwork/production.py
 ```
 
 Crontab:
