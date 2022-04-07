@@ -119,7 +119,7 @@ class NewsNetwork:
 					tweet_lines.append(f"{a_text}: {a_href}")
 
 		question_mark_emoji = "❓"
-		question_line = f"{question_mark_emoji}: {comment.question.title} {comment.question.url}"
+		question_line = f"{question_mark_emoji}{comment.question.title} {comment.question.url}"
 		tweet_lines.append(question_line)
 
 		return "\n".join(tweet_lines)
